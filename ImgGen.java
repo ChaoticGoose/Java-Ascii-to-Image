@@ -1,12 +1,19 @@
 import java.io.*;
 import java.awt.image.*;
+import java.awt.Font;
 import javax.imageio.*;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.*;
 import java.awt.image.BufferedImage;
 
 class ImgGen
 {
+		//these values are a best guess for the system default font width and height
+	final static int CHAR_WIDTH = 37;
+	final static int CHAR_HEIGHT = 25;
+	
+	
 	public static void main(String[] argv)
 	{
 			//reader to read from standard input
@@ -49,11 +56,20 @@ class ImgGen
 			//set up the graphics object to draw the image on
 			//assume that there is a margin of 1 character on each edge of the image
 			//assume for not that each glyph is 10px by 10px
-		BufferedImage canvas = new BufferedImage((width + 1) * 10, (height +1) * 10, BufferedImage.TYPE_INT_RGB);
+		BufferedImage canvas = new BufferedImage(width * CHAR_WIDTH, (height + 1)* CHAR_HEIGHT, BufferedImage.TYPE_INT_RGB);
 		Graphics2D paper = canvas.createGraphics();
+		Font imageFont = new Font("Consolas", Font.PLAIN, 20);
+		paper.setFont(imageFont);
+
+		
+			//included to find the width and height of a character for the selected font.
+		//Rectangle2D rect = imageFont.getMaxCharBounds(paper.getFontRenderContext());
+		//int CharWidth = (int)rect.getWidth();
+		//int CharHeight = (int)rect.getHeight();
+		//System.out.println("Char Width: " + CharWidth + " Char Height: " + CharHeight);
 
 			//read height lines from standard input
-		for(int i = 1; i<=height; i++)
+		for(int i = 0; i<height; i++)
 		{
 			String line;
 			
@@ -76,7 +92,8 @@ class ImgGen
 			System.out.println(line);
 			
 				//draw the string on the image
-			paper.drawString(line, 10, 10*i);
+			//paper.drawString(line, CHAR_WIDTH, (i + 1) * CHAR_HEIGHT);
+			DrawString(i*CHAR_HEIGHT + CHAR_HEIGHT, CHAR_WIDTH, line, paper);
 		}
 		
 			//save the image to the output file "ImgGen.jpg"
@@ -90,4 +107,15 @@ class ImgGen
 			System.out.println("Error while saving image");
 		}
   }
+  
+	static void DrawString(int y, int x, String string, Graphics2D paper)
+	{
+			//split the string into individual characters
+		String[] chars = string.split("");
+			//print each character at the "Correct" location
+		for(int i = 0; i< chars.length; i++)
+		{
+			paper.drawString(chars[i], x * i + CHAR_WIDTH / 4, y);
+		}
+	}
 }
