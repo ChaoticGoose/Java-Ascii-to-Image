@@ -31,6 +31,19 @@ class ImgGen
 			return;
 		}
 
+		//read height lines from standard input
+		for(int i = 1; i<=height; i++)
+		{
+			String line = reader.readLine();
+			
+			if(line.length() > width)
+			{
+				System.out.println("Line " + i + " is too long, length is " + line.length() + " Should be no more than " + width);
+				return
+			}
+			//to ensure that lines are read properly, echo the line to standard output
+			System.out.println(line);
+		}
 			//parse as an integer.
 		//int n = Integer.parseInt(input);
 			//write to standard output
