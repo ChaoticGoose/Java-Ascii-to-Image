@@ -1,11 +1,12 @@
 import java.io.*;
 import java.awt.image.*;
-import java.awt.Font;
+//import java.awt.Font;
 import javax.imageio.*;
-import java.awt.Color;
-import java.awt.Graphics2D;
+//import java.awt.Color;
+//import java.awt.Graphics2D;
 import java.awt.geom.*;
-import java.awt.image.BufferedImage;
+import java.awt.*;
+//import java.awt.image.BufferedImage;
 
 class ImgGen
 {
@@ -13,6 +14,17 @@ class ImgGen
 	final static int CHAR_WIDTH = 37;
 	final static int CHAR_HEIGHT = 25;
 	
+	final static Color[] BACKGROUNDS = 
+		{
+			Color.blue,
+			Color.green,
+			Color.orange,
+			Color.red,
+			Color.yellow,
+			Color.cyan,
+			Color.magenta,
+			Color.pink
+		};
 	
 	public static void main(String[] argv)
 	{
@@ -56,7 +68,7 @@ class ImgGen
 			//set up the graphics object to draw the image on
 			//assume that there is a margin of 1 character on each edge of the image
 			//assume for not that each glyph is 10px by 10px
-		BufferedImage canvas = new BufferedImage(width * CHAR_WIDTH, (height + 1)* CHAR_HEIGHT, BufferedImage.TYPE_INT_RGB);
+		BufferedImage canvas = new BufferedImage(width * CHAR_WIDTH, height* CHAR_HEIGHT + (CHAR_HEIGHT/3), BufferedImage.TYPE_INT_RGB);
 		Graphics2D paper = canvas.createGraphics();
 		Font imageFont = new Font("Consolas", Font.PLAIN, 20);
 		paper.setFont(imageFont);
@@ -67,7 +79,26 @@ class ImgGen
 		//int CharWidth = (int)rect.getWidth();
 		//int CharHeight = (int)rect.getHeight();
 		//System.out.println("Char Width: " + CharWidth + " Char Height: " + CharHeight);
+		
+		paper.setPaint(Color.gray);
+			//draw different colored rows onto the image
+		Rectangle rect = new Rectangle(canvas.getWidth(), CHAR_HEIGHT/6);
+		paper.fill(rect);
+		
+		rect.setLocation(0, CHAR_HEIGHT/6);
+		rect.setSize(canvas.getWidth(),CHAR_HEIGHT);
+		
+		for(int i = 0; i<height; i++)
+		{
+			paper.setPaint(BACKGROUNDS[i%BACKGROUNDS.length]);
+			paper.fill(rect);
+			rect.setLocation(0, (int)rect.getY() + CHAR_HEIGHT);
+		}
+		
+		paper.setPaint(Color.gray);
+		paper.fill(rect);
 
+	paper.setPaint(Color.black);
 			//read height lines from standard input
 		for(int i = 0; i<height; i++)
 		{
@@ -99,8 +130,8 @@ class ImgGen
 			//save the image to the output file "ImgGen.jpg"
 		try
 		{
-			File outputfile = new File("ImgGen.jpg");
-			ImageIO.write(canvas, "jpg", outputfile);
+			File outputfile = new File("ImgGen.png");
+			ImageIO.write(canvas, "png", outputfile);
 		}
 		catch(IOException e)
 		{
