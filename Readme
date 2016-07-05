@@ -1,0 +1,1 @@
+This application will take input from standard in, and create an image which has the text input represented on it in rows. The first line of input should be the width and height (in characters) of the image, to allow the image to be generated at an appropriate size.
